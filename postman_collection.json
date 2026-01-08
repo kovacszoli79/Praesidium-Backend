@@ -1,46 +1,9 @@
 {
   "info": {
     "name": "Praesidium API",
-    "description": "API collection for Praesidium family location tracking app",
+    "description": "API collection for Praesidium family location tracking app.\n\nUse with the environment files:\n- postman_environment_local.json (localhost:3000)\n- postman_environment_production.json (praesidium-api.vercel.app)\n\nImport the environment files and select the desired environment from the dropdown.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
-  "variable": [
-    {
-      "key": "baseUrl",
-      "value": "http://localhost:3000",
-      "type": "string"
-    },
-    {
-      "key": "token",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "parentToken",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "childToken",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "pairingCode",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "familyInviteCode",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "childId",
-      "value": "",
-      "type": "string"
-    }
-  ],
   "item": [
     {
       "name": "Health Check",
@@ -71,11 +34,11 @@
                 "exec": [
                   "var jsonData = pm.response.json();",
                   "if (jsonData.token) {",
-                  "    pm.collectionVariables.set('token', jsonData.token);",
-                  "    pm.collectionVariables.set('parentToken', jsonData.token);",
+                  "    pm.environment.set('token', jsonData.token);",
+                  "    pm.environment.set('parentToken', jsonData.token);",
                   "}",
                   "if (jsonData.user && jsonData.user.pairingCode) {",
-                  "    pm.collectionVariables.set('pairingCode', jsonData.user.pairingCode);",
+                  "    pm.environment.set('pairingCode', jsonData.user.pairingCode);",
                   "}"
                 ],
                 "type": "text/javascript"
@@ -110,10 +73,10 @@
                 "exec": [
                   "var jsonData = pm.response.json();",
                   "if (jsonData.token) {",
-                  "    pm.collectionVariables.set('childToken', jsonData.token);",
+                  "    pm.environment.set('childToken', jsonData.token);",
                   "}",
                   "if (jsonData.user && jsonData.user.id) {",
-                  "    pm.collectionVariables.set('childId', jsonData.user.id);",
+                  "    pm.environment.set('childId', jsonData.user.id);",
                   "}"
                 ],
                 "type": "text/javascript"
@@ -148,11 +111,11 @@
                 "exec": [
                   "var jsonData = pm.response.json();",
                   "if (jsonData.token) {",
-                  "    pm.collectionVariables.set('token', jsonData.token);",
-                  "    pm.collectionVariables.set('parentToken', jsonData.token);",
+                  "    pm.environment.set('token', jsonData.token);",
+                  "    pm.environment.set('parentToken', jsonData.token);",
                   "}",
                   "if (jsonData.user && jsonData.user.pairingCode) {",
-                  "    pm.collectionVariables.set('pairingCode', jsonData.user.pairingCode);",
+                  "    pm.environment.set('pairingCode', jsonData.user.pairingCode);",
                   "}"
                 ],
                 "type": "text/javascript"
@@ -187,10 +150,10 @@
                 "exec": [
                   "var jsonData = pm.response.json();",
                   "if (jsonData.token) {",
-                  "    pm.collectionVariables.set('childToken', jsonData.token);",
+                  "    pm.environment.set('childToken', jsonData.token);",
                   "}",
                   "if (jsonData.user && jsonData.user.id) {",
-                  "    pm.collectionVariables.set('childId', jsonData.user.id);",
+                  "    pm.environment.set('childId', jsonData.user.id);",
                   "}"
                 ],
                 "type": "text/javascript"
@@ -242,7 +205,7 @@
                 "exec": [
                   "var jsonData = pm.response.json();",
                   "if (jsonData.pairingCode) {",
-                  "    pm.collectionVariables.set('pairingCode', jsonData.pairingCode);",
+                  "    pm.environment.set('pairingCode', jsonData.pairingCode);",
                   "}"
                 ],
                 "type": "text/javascript"
@@ -303,7 +266,7 @@
                 "exec": [
                   "var jsonData = pm.response.json();",
                   "if (jsonData.inviteCode) {",
-                  "    pm.collectionVariables.set('familyInviteCode', jsonData.inviteCode);",
+                  "    pm.environment.set('familyInviteCode', jsonData.inviteCode);",
                   "}"
                 ],
                 "type": "text/javascript"
@@ -401,7 +364,7 @@
                 "exec": [
                   "var jsonData = pm.response.json();",
                   "if (jsonData.inviteCode) {",
-                  "    pm.collectionVariables.set('familyInviteCode', jsonData.inviteCode);",
+                  "    pm.environment.set('familyInviteCode', jsonData.inviteCode);",
                   "}"
                 ],
                 "type": "text/javascript"

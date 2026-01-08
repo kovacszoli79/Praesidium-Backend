@@ -13,7 +13,7 @@ const router = Router();
 router.get('/', parentOnly, async (req, res, next) => {
   try {
     const children = await db.query.users.findMany({
-      where: eq(users.parentId, req.user!.userId),
+      where: eq(users.parentId, req.user!.id),
     });
 
     const result = await Promise.all(children.map(async (child) => {
@@ -57,7 +57,7 @@ router.get('/:childId', parentOnly, async (req, res, next) => {
     const child = await db.query.users.findFirst({
       where: and(
         eq(users.id, childId),
-        eq(users.parentId, req.user!.userId)
+        eq(users.parentId, req.user!.id)
       ),
     });
 
@@ -112,7 +112,7 @@ router.get(
       const child = await db.query.users.findFirst({
         where: and(
           eq(users.id, childId),
-          eq(users.parentId, req.user!.userId)
+          eq(users.parentId, req.user!.id)
         ),
       });
 
@@ -166,7 +166,7 @@ router.get(
       const child = await db.query.users.findFirst({
         where: and(
           eq(users.id, childId),
-          eq(users.parentId, req.user!.userId)
+          eq(users.parentId, req.user!.id)
         ),
       });
 
@@ -231,7 +231,7 @@ router.post(
       // Check if stats exist for this date
       const existingStats = await db.query.dailyStats.findFirst({
         where: and(
-          eq(dailyStats.userId, req.user!.userId),
+          eq(dailyStats.userId, req.user!.id),
           eq(dailyStats.date, dateStr)
         ),
       });
@@ -256,7 +256,7 @@ router.post(
         const statsId = generateId();
         await db.insert(dailyStats).values({
           id: statsId,
-          userId: req.user!.userId,
+          userId: req.user!.id,
           date: dateStr,
           screenTimeMinutes,
           appUsage: appUsage || [],
@@ -292,7 +292,7 @@ router.patch(
       const child = await db.query.users.findFirst({
         where: and(
           eq(users.id, childId),
-          eq(users.parentId, req.user!.userId)
+          eq(users.parentId, req.user!.id)
         ),
       });
 

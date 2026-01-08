@@ -18,7 +18,7 @@ router.post(
   async (req, res, next) => {
     try {
       const { name } = req.body;
-      const userId = req.user!.userId;
+      const userId = req.user!.id;
 
       // Check if user already in a family
       const user = await db.query.users.findFirst({
@@ -75,7 +75,7 @@ router.post(
 router.get('/', async (req, res, next) => {
   try {
     const user = await db.query.users.findFirst({
-      where: eq(users.id, req.user!.userId),
+      where: eq(users.id, req.user!.id),
     });
 
     if (!user?.familyId) {
@@ -119,7 +119,7 @@ router.post(
   async (req, res, next) => {
     try {
       const { inviteCode } = req.body;
-      const userId = req.user!.userId;
+      const userId = req.user!.id;
 
       // Check if user already in a family
       const user = await db.query.users.findFirst({
@@ -168,7 +168,7 @@ router.post(
 // Leave family
 router.post('/leave', async (req, res, next) => {
   try {
-    const userId = req.user!.userId;
+    const userId = req.user!.id;
 
     const user = await db.query.users.findFirst({
       where: eq(users.id, userId),
@@ -204,7 +204,7 @@ router.post('/leave', async (req, res, next) => {
 router.post('/regenerate-code', parentOnly, async (req, res, next) => {
   try {
     const user = await db.query.users.findFirst({
-      where: eq(users.id, req.user!.userId),
+      where: eq(users.id, req.user!.id),
     });
 
     if (!user?.familyId) {
@@ -227,7 +227,7 @@ router.post('/regenerate-code', parentOnly, async (req, res, next) => {
 router.get('/members', async (req, res, next) => {
   try {
     const user = await db.query.users.findFirst({
-      where: eq(users.id, req.user!.userId),
+      where: eq(users.id, req.user!.id),
     });
 
     if (!user?.familyId) {
@@ -279,7 +279,7 @@ router.post(
   async (req, res, next) => {
     try {
       const { name, latitude, longitude, radius, icon } = req.body;
-      const userId = req.user!.userId;
+      const userId = req.user!.id;
 
       const user = await db.query.users.findFirst({
         where: eq(users.id, userId),
@@ -318,7 +318,7 @@ router.post(
 router.get('/places', async (req, res, next) => {
   try {
     const user = await db.query.users.findFirst({
-      where: eq(users.id, req.user!.userId),
+      where: eq(users.id, req.user!.id),
     });
 
     if (!user?.familyId) {
@@ -350,7 +350,7 @@ router.get('/places', async (req, res, next) => {
 router.delete('/places/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
-    const userId = req.user!.userId;
+    const userId = req.user!.id;
 
     const user = await db.query.users.findFirst({
       where: eq(users.id, userId),

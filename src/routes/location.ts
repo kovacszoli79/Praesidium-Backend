@@ -41,7 +41,7 @@ router.post(
 
       await db.insert(locations).values({
         id: locationId,
-        userId: req.user!.userId,
+        userId: req.user!.id,
         latitude,
         longitude,
         accuracy,
@@ -57,7 +57,7 @@ router.post(
       // Update user's lastSeen
       await db.update(users)
         .set({ lastSeen: now })
-        .where(eq(users.id, req.user!.userId));
+        .where(eq(users.id, req.user!.id));
 
       const location = await db.query.locations.findFirst({
         where: eq(locations.id, locationId),
@@ -74,7 +74,7 @@ router.post(
 router.get('/current', async (req, res, next) => {
   try {
     const location = await db.query.locations.findFirst({
-      where: eq(locations.userId, req.user!.userId),
+      where: eq(locations.userId, req.user!.id),
       orderBy: desc(locations.timestamp),
     });
 
@@ -99,7 +99,7 @@ router.get(
   async (req, res, next) => {
     try {
       const { date, userId, limit } = req.query;
-      const requestingUserId = req.user!.userId;
+      const requestingUserId = req.user!.id;
 
       // If userId is specified, check permissions
       let targetUserId = requestingUserId;
@@ -172,7 +172,7 @@ router.get(
 router.get('/user/:userId', async (req, res, next) => {
   try {
     const { userId } = req.params;
-    const requestingUserId = req.user!.userId;
+    const requestingUserId = req.user!.id;
 
     // Check if same family
     const targetUser = await db.query.users.findFirst({
@@ -225,7 +225,7 @@ router.post(
 
       const values = locationsData.map((loc: any) => ({
         id: generateId(),
-        userId: req.user!.userId,
+        userId: req.user!.id,
         latitude: loc.latitude,
         longitude: loc.longitude,
         accuracy: loc.accuracy,
@@ -243,7 +243,7 @@ router.post(
       // Update user's lastSeen
       await db.update(users)
         .set({ lastSeen: new Date() })
-        .where(eq(users.id, req.user!.userId));
+        .where(eq(users.id, req.user!.id));
 
       res.status(201).json({
         message: 'Locations synced',

@@ -12,6 +12,16 @@ import familyRoutes from './routes/family';
 import locationRoutes from './routes/location';
 import statusRoutes from './routes/status';
 import childRoutes from './routes/child';
+import geofenceRoutes from './routes/geofence';
+import pingRoutes from './routes/ping';
+import locationRequestRoutes from './routes/locationRequest';
+import chatRoutes from './routes/chat';
+import remindersRoutes from './routes/reminders';
+import screenTimeRoutes from './routes/screenTime';
+import browsingRoutes from './routes/browsing';
+import blockedAppsRoutes from './routes/blockedApps';
+import crashRoutes from './routes/crash';
+import drivingRoutes from './routes/driving';
 import { errorHandler } from './middleware/errorHandler';
 import { authMiddleware } from './middleware/auth';
 
@@ -41,6 +51,16 @@ app.use('/api/family', authMiddleware, familyRoutes);
 app.use('/api/location', authMiddleware, locationRoutes);
 app.use('/api/status', authMiddleware, statusRoutes);
 app.use('/api/children', authMiddleware, childRoutes);
+app.use('/api/geofences', authMiddleware, geofenceRoutes);
+app.use('/api/ping', authMiddleware, pingRoutes);
+app.use('/api/location-request', authMiddleware, locationRequestRoutes);
+app.use('/api/chat', authMiddleware, chatRoutes);
+app.use('/api/reminders', authMiddleware, remindersRoutes);
+app.use('/api/screen-time', authMiddleware, screenTimeRoutes);
+app.use('/api/browsing', authMiddleware, browsingRoutes);
+app.use('/api/blocked-apps', authMiddleware, blockedAppsRoutes);
+app.use('/api/crash', authMiddleware, crashRoutes);
+app.use('/api/driving', authMiddleware, drivingRoutes);
 
 // Error handling
 app.use(errorHandler);

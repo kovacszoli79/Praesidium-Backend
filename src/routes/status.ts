@@ -25,7 +25,7 @@ router.post(
 
       await db.insert(statusUpdates).values({
         id: statusId,
-        userId: req.user!.userId,
+        userId: req.user!.id,
         status,
         latitude,
         longitude,
@@ -35,7 +35,7 @@ router.post(
       // Update user's lastSeen
       await db.update(users)
         .set({ lastSeen: now })
-        .where(eq(users.id, req.user!.userId));
+        .where(eq(users.id, req.user!.id));
 
       const statusUpdate = await db.query.statusUpdates.findFirst({
         where: eq(statusUpdates.id, statusId),
@@ -52,7 +52,7 @@ router.post(
 router.get('/current', async (req, res, next) => {
   try {
     const status = await db.query.statusUpdates.findFirst({
-      where: eq(statusUpdates.userId, req.user!.userId),
+      where: eq(statusUpdates.userId, req.user!.id),
       orderBy: desc(statusUpdates.timestamp),
     });
 
@@ -72,7 +72,7 @@ router.get(
   async (req, res, next) => {
     try {
       const { limit, userId } = req.query;
-      const requestingUserId = req.user!.userId;
+      const requestingUserId = req.user!.id;
 
       let targetUserId = requestingUserId;
 
@@ -113,7 +113,7 @@ router.get(
 router.get('/family', async (req, res, next) => {
   try {
     const user = await db.query.users.findFirst({
-      where: eq(users.id, req.user!.userId),
+      where: eq(users.id, req.user!.id),
     });
 
     if (!user?.familyId) {

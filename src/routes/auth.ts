@@ -176,7 +176,7 @@ router.post(
 router.get('/me', authMiddleware, async (req, res, next) => {
   try {
     const user = await db.query.users.findFirst({
-      where: eq(users.id, req.user!.userId),
+      where: eq(users.id, req.user!.id),
     });
 
     if (!user) {
@@ -225,7 +225,7 @@ router.patch('/fcm-token', authMiddleware, async (req, res, next) => {
 
     await db.update(users)
       .set({ fcmToken, updatedAt: new Date() })
-      .where(eq(users.id, req.user!.userId));
+      .where(eq(users.id, req.user!.id));
 
     res.json({ message: 'FCM token updated' });
   } catch (error) {
@@ -244,7 +244,7 @@ router.post('/pairing-code', authMiddleware, async (req, res, next) => {
 
     await db.update(users)
       .set({ pairingCode, updatedAt: new Date() })
-      .where(eq(users.id, req.user!.userId));
+      .where(eq(users.id, req.user!.id));
 
     res.json({ pairingCode });
   } catch (error) {
