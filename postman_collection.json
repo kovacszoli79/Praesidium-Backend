@@ -1,0 +1,897 @@
+{
+  "info": {
+    "name": "Praesidium API",
+    "description": "API collection for Praesidium family location tracking app",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "parentToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "childToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "pairingCode",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "familyInviteCode",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "childId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register Parent",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set('token', jsonData.token);",
+                  "    pm.collectionVariables.set('parentToken', jsonData.token);",
+                  "}",
+                  "if (jsonData.user && jsonData.user.pairingCode) {",
+                  "    pm.collectionVariables.set('pairingCode', jsonData.user.pairingCode);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"parent@test.com\",\n    \"password\": \"test1234\",\n    \"displayName\": \"Test Parent\",\n    \"role\": \"parent\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Register Child (with pairing code)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set('childToken', jsonData.token);",
+                  "}",
+                  "if (jsonData.user && jsonData.user.id) {",
+                  "    pm.collectionVariables.set('childId', jsonData.user.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"child@test.com\",\n    \"password\": \"test1234\",\n    \"displayName\": \"Test Child\",\n    \"role\": \"child\",\n    \"pairingCode\": \"{{pairingCode}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login Parent",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set('token', jsonData.token);",
+                  "    pm.collectionVariables.set('parentToken', jsonData.token);",
+                  "}",
+                  "if (jsonData.user && jsonData.user.pairingCode) {",
+                  "    pm.collectionVariables.set('pairingCode', jsonData.user.pairingCode);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"parent@test.com\",\n    \"password\": \"test1234\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login Child",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set('childToken', jsonData.token);",
+                  "}",
+                  "if (jsonData.user && jsonData.user.id) {",
+                  "    pm.collectionVariables.set('childId', jsonData.user.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"child@test.com\",\n    \"password\": \"test1234\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "me"]
+            }
+          }
+        },
+        {
+          "name": "Generate New Pairing Code",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.pairingCode) {",
+                  "    pm.collectionVariables.set('pairingCode', jsonData.pairingCode);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{parentToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/pairing-code",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "pairing-code"]
+            }
+          }
+        },
+        {
+          "name": "Update FCM Token",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"fcmToken\": \"test-fcm-token-12345\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/fcm-token",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "fcm-token"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Family",
+      "item": [
+        {
+          "name": "Create Family",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.inviteCode) {",
+                  "    pm.collectionVariables.set('familyInviteCode', jsonData.inviteCode);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{parentToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Test Family\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/family",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "family"]
+            }
+          }
+        },
+        {
+          "name": "Get Current Family",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/family",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "family"]
+            }
+          }
+        },
+        {
+          "name": "Join Family (with invite code)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{childToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"inviteCode\": \"{{familyInviteCode}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/family/join",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "family", "join"]
+            }
+          }
+        },
+        {
+          "name": "Get Family Members",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/family/members",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "family", "members"]
+            }
+          }
+        },
+        {
+          "name": "Regenerate Invite Code",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.inviteCode) {",
+                  "    pm.collectionVariables.set('familyInviteCode', jsonData.inviteCode);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{parentToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/family/regenerate-code",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "family", "regenerate-code"]
+            }
+          }
+        },
+        {
+          "name": "Add Favorite Place",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Home\",\n    \"latitude\": 47.4979,\n    \"longitude\": 19.0402,\n    \"radius\": 100,\n    \"icon\": \"home\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/family/places",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "family", "places"]
+            }
+          }
+        },
+        {
+          "name": "Get Favorite Places",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/family/places",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "family", "places"]
+            }
+          }
+        },
+        {
+          "name": "Leave Family",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/family/leave",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "family", "leave"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Location",
+      "item": [
+        {
+          "name": "Update Location",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"latitude\": 47.4979,\n    \"longitude\": 19.0402,\n    \"accuracy\": 10.5,\n    \"altitude\": 120,\n    \"speed\": 0,\n    \"heading\": 90,\n    \"batteryLevel\": 85,\n    \"isCharging\": false,\n    \"dwellTime\": 30\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/location",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "location"]
+            }
+          }
+        },
+        {
+          "name": "Update Location (Child)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{childToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"latitude\": 47.5012,\n    \"longitude\": 19.0456,\n    \"accuracy\": 15,\n    \"batteryLevel\": 72,\n    \"isCharging\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/location",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "location"]
+            }
+          }
+        },
+        {
+          "name": "Get Current Location",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/location/current",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "location", "current"]
+            }
+          }
+        },
+        {
+          "name": "Get Location History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/location/history?date=2026-01-08",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "location", "history"],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "2026-01-08"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User Location (by userId)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{parentToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/location/user/{{childId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "location", "user", "{{childId}}"]
+            }
+          }
+        },
+        {
+          "name": "Batch Update Locations",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"locations\": [\n        {\n            \"latitude\": 47.4979,\n            \"longitude\": 19.0402,\n            \"accuracy\": 10,\n            \"timestamp\": 1736300000000\n        },\n        {\n            \"latitude\": 47.4985,\n            \"longitude\": 19.0410,\n            \"accuracy\": 12,\n            \"timestamp\": 1736300600000\n        }\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/location/batch",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "location", "batch"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Status",
+      "item": [
+        {
+          "name": "Update Status (Arrived)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{childToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": \"arrived\",\n    \"latitude\": 47.4979,\n    \"longitude\": 19.0402\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "status"]
+            }
+          }
+        },
+        {
+          "name": "Update Status (Safe)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{childToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": \"safe\",\n    \"latitude\": 47.5012,\n    \"longitude\": 19.0456\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "status"]
+            }
+          }
+        },
+        {
+          "name": "Update Status (Departed)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{childToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": \"departed\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "status"]
+            }
+          }
+        },
+        {
+          "name": "Get Current Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/status/current",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "status", "current"]
+            }
+          }
+        },
+        {
+          "name": "Get Status History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/status/history?limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "status", "history"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Family Statuses",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/status/family",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "status", "family"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Children (Parent Only)",
+      "item": [
+        {
+          "name": "Get All Children",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{parentToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/children",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "children"]
+            }
+          }
+        },
+        {
+          "name": "Get Child Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{parentToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/children/{{childId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "children", "{{childId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Child Location Tracks",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{parentToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/children/{{childId}}/tracks?date=2026-01-08",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "children", "{{childId}}", "tracks"],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "2026-01-08"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Child Daily Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{parentToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/children/{{childId}}/stats?date=2026-01-08",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "children", "{{childId}}", "stats"],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "2026-01-08"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Daily Stats (Child)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{childToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"date\": \"2026-01-08\",\n    \"screenTimeMinutes\": 120,\n    \"appUsage\": [\n        {\n            \"appName\": \"YouTube\",\n            \"packageName\": \"com.google.youtube\",\n            \"icon\": \"youtube\",\n            \"usageMinutes\": 45\n        },\n        {\n            \"appName\": \"TikTok\",\n            \"packageName\": \"com.zhiliaoapp.musically\",\n            \"icon\": \"tiktok\",\n            \"usageMinutes\": 30\n        }\n    ],\n    \"visitedUrls\": [\n        {\n            \"url\": \"https://youtube.com\",\n            \"title\": \"YouTube\",\n            \"timestamp\": 1736300000000\n        }\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/children/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "children", "stats"]
+            }
+          }
+        },
+        {
+          "name": "Update Child Avatar",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{parentToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"avatar\": \"avatar_unicorn\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/children/{{childId}}/avatar",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "children", "{{childId}}", "avatar"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
