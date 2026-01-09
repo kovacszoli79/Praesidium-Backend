@@ -6,7 +6,7 @@ import { eq } from 'drizzle-orm';
 import { db, users, families } from '../db';
 import { validate } from '../middleware/validate';
 import { AppError } from '../middleware/errorHandler';
-import { createPairingCode, generateId } from '../utils/codes';
+import { createPairingCode, generateId, createInviteCode } from '../utils/codes';
 import { authMiddleware } from '../middleware/auth';
 
 const router = Router();
@@ -55,6 +55,20 @@ router.post(
       const userId = generateId();
       const now = new Date();
 
+      // For parent registration, create a family first
+      let familyId: string | null = parentUser?.familyId || null;
+      if (role === 'parent') {
+        const newFamilyId = generateId();
+        await db.insert(families).values({
+          id: newFamilyId,
+          name: `${displayName} család`,
+          inviteCode: createInviteCode(),
+          createdAt: now,
+          updatedAt: now,
+        });
+        familyId = newFamilyId;
+      }
+
       // Create user
       await db.insert(users).values({
         id: userId,
@@ -63,7 +77,7 @@ router.post(
         displayName,
         role,
         parentId: parentUser?.id || null,
-        familyId: parentUser?.familyId || null,
+        familyId,
         pairingCode: role === 'parent' ? createPairingCode() : null,
         createdAt: now,
         updatedAt: now,
@@ -138,12 +152,36 @@ router.post(
         .set({ lastSeen: new Date() })
         .where(eq(users.id, user.id));
 
-      // Get family if exists
+      // Get family if exists, or create one for parents without family
       let family = null;
       if (user.familyId) {
         family = await db.query.families.findFirst({
           where: eq(families.id, user.familyId),
         });
+      } else if (user.role === 'parent') {
+        // Auto-create family for parent users without one (migration)
+        const newFamilyId = generateId();
+        const now = new Date();
+        await db.insert(families).values({
+          id: newFamilyId,
+          name: `${user.displayName} család`,
+          inviteCode: createInviteCode(),
+          createdAt: now,
+          updatedAt: now,
+        });
+        await db.update(users)
+          .set({ familyId: newFamilyId, updatedAt: now })
+          .where(eq(users.id, user.id));
+        family = await db.query.families.findFirst({
+          where: eq(families.id, newFamilyId),
+        });
+        // Update user object for response
+        user.familyId = newFamilyId;
+
+        // Also update all children of this parent
+        await db.update(users)
+          .set({ familyId: newFamilyId, updatedAt: now })
+          .where(eq(users.parentId, user.id));
       }
 
       // Generate JWT
