@@ -47,7 +47,7 @@ router.get(
           };
         })
       );
-      res.json({ messages: messagesWithSenders.reverse() });
+      res.json({ messages: messagesWithSenders.reverse(), hasMore: messages.length === limit });
     } catch (error) {
       console.error('Get messages error:', error);
       res.status(500).json({ error: 'Failed to get messages' });
