@@ -46,7 +46,7 @@ export const locations = sqliteTable('locations', {
 export const statusUpdates = sqliteTable('status_updates', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull(),
-  status: text('status', { enum: ['arrived', 'departed', 'safe', 'none'] }).notNull(),
+  status: text('status', { enum: ['arrived', 'departed', 'safe', 'sos', 'none'] }).notNull(),
   latitude: real('latitude'),
   longitude: real('longitude'),
   timestamp: integer('timestamp', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
