@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { body, query } from 'express-validator';
-import { eq, desc, and, gte, lte, asc } from 'drizzle-orm';
+import { body, query, param } from 'express-validator';
+import { eq, desc, and, gte, lte, asc, inArray } from 'drizzle-orm';
 import { db, users, locations } from '../db';
 import { validate } from '../middleware/validate';
 import { AppError } from '../middleware/errorHandler';
@@ -254,5 +254,75 @@ router.post(
     }
   }
 );
+
+// Clear all location history for a user (admin/parent feature)
+router.delete(
+  '/clear/:userId',
+  validate([param('userId').optional().isString()]),
+  async (req, res, next) => {
+    try {
+      const { userId } = req.params;
+      const requestingUser = req.user!;
+
+      let targetUserId = userId || requestingUser.id;
+
+      // If clearing another user's data, must be parent
+      if (targetUserId !== requestingUser.id) {
+        if (requestingUser.role !== 'parent') {
+          throw new AppError('Only parents can clear other users data', 403);
+        }
+
+        // Verify target is a child of this parent
+        const targetUser = await db.query.users.findFirst({
+          where: eq(users.id, targetUserId),
+        });
+
+        if (!targetUser || targetUser.parentId !== requestingUser.id) {
+          throw new AppError('Not authorized to clear this users data', 403);
+        }
+      }
+
+      // Delete all locations for target user
+      await db.delete(locations).where(eq(locations.userId, targetUserId));
+
+      res.json({ message: 'Location history cleared', userId: targetUserId });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// Clear all location history for all children (parent only)
+router.delete('/clear-all', async (req, res, next) => {
+  try {
+    const requestingUser = req.user!;
+
+    if (requestingUser.role !== 'parent') {
+      throw new AppError('Only parents can use this feature', 403);
+    }
+
+    // Get all children of this parent
+    const children = await db.query.users.findMany({
+      where: eq(users.parentId, requestingUser.id),
+    });
+
+    const childIds = children.map(c => c.id);
+
+    if (childIds.length === 0) {
+      return res.json({ message: 'No children found', cleared: 0 });
+    }
+
+    // Delete all locations for all children
+    await db.delete(locations).where(inArray(locations.userId, childIds));
+
+    res.json({
+      message: 'All location history cleared',
+      childrenCleared: childIds.length,
+      childIds
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default router;
