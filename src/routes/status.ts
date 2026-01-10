@@ -12,7 +12,7 @@ const router = Router();
 router.post(
   '/',
   validate([
-    body('status').isIn(['arrived', 'departed', 'safe', 'none']),
+    body('status').isIn(['arrived', 'departed', 'safe', 'sos', 'none']),
     body('latitude').optional().isFloat({ min: -90, max: 90 }),
     body('longitude').optional().isFloat({ min: -180, max: 180 }),
   ]),
